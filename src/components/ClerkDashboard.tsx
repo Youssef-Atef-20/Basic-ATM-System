@@ -35,6 +35,13 @@ interface ClerkDashboardProps {
   onWithdraw: (amount: number, targetAccountId?: string) => boolean;
 }
 
+
+interface DisplayTransaction extends Transaction {
+  accountId: string;
+  accountName: string;
+}
+
+
 export function ClerkDashboard({
   userData,
   allAccounts,
@@ -91,7 +98,7 @@ export function ClerkDashboard({
   };
 
   const userAccounts = allAccounts.filter(acc => acc.accountType === 'user');
-  const allTransactions = allAccounts.flatMap(acc => 
+  const allTransactions: DisplayTransaction[]  = allAccounts.flatMap(acc => 
     acc.transactions.map(t => ({ ...t, accountId: acc.id, accountName: acc.name }))
   ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
