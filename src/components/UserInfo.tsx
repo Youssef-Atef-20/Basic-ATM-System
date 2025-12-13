@@ -7,8 +7,9 @@ import { useState } from 'react';
 
 interface UserInfoProps {
   userData: {
+    id: string;
     name: string;
-    accountNumber: string;
+    username?: string;
     balance: number;
   };
   onUpdateUser?: (name: string, accountNumber: string) => void;
@@ -17,7 +18,7 @@ interface UserInfoProps {
 export function UserInfo({ userData, onUpdateUser }: UserInfoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(userData.name);
-  const [accountNumber, setAccountNumber] = useState(userData.accountNumber);
+  const [accountNumber, setAccountNumber] = useState(userData.id);
 
   const handleSave = () => {
     if (onUpdateUser) {
@@ -28,7 +29,7 @@ export function UserInfo({ userData, onUpdateUser }: UserInfoProps) {
 
   const handleCancel = () => {
     setName(userData.name);
-    setAccountNumber(userData.accountNumber);
+    setAccountNumber(userData.id);
     setIsEditing(false);
   };
 
@@ -74,11 +75,22 @@ export function UserInfo({ userData, onUpdateUser }: UserInfoProps) {
                 placeholder="Max 11 digits"
               />
             ) : (
-              <p className="text-white">{userData.accountNumber}</p>
+              <p className="text-white">{userData.id}</p>
             )}
           </div>
           
           <Separator className="bg-gray-700" />
+          
+          {userData.username && (
+            <>
+              <div className="space-y-2">
+                <Label className="text-gray-400 text-sm">Username</Label>
+                <p className="text-white">{userData.username}</p>
+              </div>
+              
+              <Separator className="bg-gray-700" />
+            </>
+          )}
           
           <div className="space-y-2">
             <p className="text-gray-400 text-sm">Current Balance</p>

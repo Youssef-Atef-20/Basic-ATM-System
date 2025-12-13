@@ -6,47 +6,28 @@ import { Label } from './ui/label';
 import { LogIn } from 'lucide-react';
 
 interface LoginProps {
-  onLogin: (accountNumber: string, pin: string) => boolean;
+  onLogin: (identifier: string, password: string) => boolean;
   onSwitchToSignup: () => void;
 }
 
 export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
-  const [accountNumber, setAccountNumber] = useState('');
-  const [pin, setPin] = useState('');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const handleAccountNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 11) {
-      setAccountNumber(value);
-    }
-  };
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 4) {
-      setPin(value);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!accountNumber || !pin) {
+    if (!identifier || !password) {
       setError('Please fill in all fields');
       return;
     }
 
-    if (pin.length !== 4) {
-      setError('PIN must be 4 digits');
-      return;
-    }
-
-    const success = onLogin(accountNumber, pin);
+    const success = onLogin(identifier, password);
     if (!success) {
-      setError('Invalid account number or PIN');
-      setPin('');
+      setError('Invalid username/email or password');
+      setPassword('');
     }
   };
 
@@ -59,38 +40,36 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
             Login
           </CardTitle>
           <CardDescription className="text-gray-400">
-            Enter your account details to access the ATM
+            Enter your credentials to access the bank system
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="accountNumber" className="text-gray-300">
-                Account Number
+              <Label htmlFor="identifier" className="text-gray-300">
+                Username or Email
               </Label>
               <Input
-                id="accountNumber"
+                id="identifier"
                 type="text"
-                placeholder="Enter 11-digit account number"
-                value={accountNumber}
-                onChange={handleAccountNumberChange}
+                placeholder="Enter your username or email"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white"
-                maxLength={11}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pin" className="text-gray-300">
-                PIN
+              <Label htmlFor="password" className="text-gray-300">
+                Password
               </Label>
               <Input
-                id="pin"
+                id="password"
                 type="password"
-                placeholder="Enter 4-digit PIN"
-                value={pin}
-                onChange={handlePinChange}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white"
-                maxLength={4}
               />
             </div>
 

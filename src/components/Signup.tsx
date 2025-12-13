@@ -6,65 +6,39 @@ import { Label } from './ui/label';
 import { UserPlus } from 'lucide-react';
 
 interface SignupProps {
-  onSignup: (name: string, accountNumber: string, pin: string) => boolean;
+  onSignup: (name: string, username: string, password: string) => boolean;
   onSwitchToLogin: () => void;
 }
 
 export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
   const [name, setName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [pin, setPin] = useState('');
-  const [confirmPin, setConfirmPin] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-
-  const handleAccountNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 11) {
-      setAccountNumber(value);
-    }
-  };
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 4) {
-      setPin(value);
-    }
-  };
-
-  const handleConfirmPinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 4) {
-      setConfirmPin(value);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !accountNumber || !pin || !confirmPin) {
+    if (!name || !username || !password || !confirmPassword) {
       setError('Please fill in all fields');
       return;
     }
 
-    if (accountNumber.length !== 11) {
-      setError('Account number must be 11 digits');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
-    if (pin.length !== 4) {
-      setError('PIN must be 4 digits');
+    if (password.length < 4) {
+      setError('Password must be at least 4 characters');
       return;
     }
 
-    if (pin !== confirmPin) {
-      setError('PINs do not match');
-      return;
-    }
-
-    const success = onSignup(name, accountNumber, pin);
+    const success = onSignup(name, username, password);
     if (!success) {
-      setError('Account number already exists');
+      setError('Username already exists');
     }
   };
 
@@ -77,7 +51,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
             Sign Up
           </CardTitle>
           <CardDescription className="text-gray-400">
-            Create a new account to use the ATM
+            Create a new account to use the bank system
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -97,48 +71,49 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="accountNumber" className="text-gray-300">
-                Account Number
+              <Label htmlFor="username" className="text-gray-300">
+                Username
               </Label>
               <Input
-                id="accountNumber"
+                id="username"
                 type="text"
-                placeholder="Create 11-digit account number"
-                value={accountNumber}
-                onChange={handleAccountNumberChange}
+                placeholder="Choose a username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white"
-                maxLength={11}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pin" className="text-gray-300">
-                PIN
+              <Label htmlFor="password" className="text-gray-300">
+                Password
               </Label>
               <Input
-                id="pin"
+                id="password"
                 type="password"
-                placeholder="Create 4-digit PIN"
-                value={pin}
-                onChange={handlePinChange}
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white"
-                maxLength={4}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPin" className="text-gray-300">
-                Confirm PIN
+              <Label htmlFor="confirmPassword" className="text-gray-300">
+                Confirm Password
               </Label>
               <Input
-                id="confirmPin"
+                id="confirmPassword"
                 type="password"
-                placeholder="Re-enter your PIN"
-                value={confirmPin}
-                onChange={handleConfirmPinChange}
+                placeholder="Re-enter your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="bg-gray-700 border-gray-600 text-white"
-                maxLength={4}
               />
+            </div>
+
+            <div className="bg-blue-900/30 border border-blue-700 rounded-lg p-3 text-blue-300 text-sm">
+              Your account number will be automatically generated
             </div>
 
             {error && (
